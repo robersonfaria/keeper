@@ -1,9 +1,21 @@
 {
     "name": "jakjr/keeper",
+    "description": "Uma abstração do Laravel5 Session para manter valores",
+    "authors": [
+      {
+        "name": "João Alfredo Knopik Junior",
+        "email": "joao.alfredo@gmail.com"
+      }
+    ],
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Jakjr\\Keeper\\": "src/"
         }
+    },
+    "require": {
+      "php": ">=5.5.9",
+      "illuminate/support": "^5.1"
     },
     "require-dev": {
         "phpunit/phpunit": "4.*"
