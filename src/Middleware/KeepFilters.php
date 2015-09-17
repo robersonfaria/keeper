@@ -21,6 +21,11 @@ class KeepFilters
 
             $keeper->keep( array_dot( $request->only(['filter']) ) );
 
+            //sempre que houver submit de filters,
+            //reinicio a paginação do contexto.
+            if ($keeper->has('page')) {
+                $keeper->keep(['page' => 1]);
+            }
         }
 
         return $next($request);
