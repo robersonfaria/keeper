@@ -8,12 +8,20 @@ class Keeper {
     private $context = null;
     private $session;
     
-    function __construct($client=null, SessionInterface $session)
+    function __construct($context, SessionInterface $session)
     {
         $this->session = $session;
 
-        if (! is_null($client) ) {
-            $this->context = is_object($client) ? get_class($client) : $client;
+        if (is_object($context)) {
+            $this->context = get_class($context);
+        }
+
+        if (is_string($context)) {
+            $this->context = $context;
+        }
+
+        if (is_null($this->context)) {
+            throw new \InvalidArgumentException('Invalid context');
         }
     }
 
@@ -35,7 +43,11 @@ class Keeper {
         $contextToUse = $this->getContext($context);
 
         foreach($inputs as $key => $value) {
-            $this->session->put("keeper.$contextToUse.$key", $value);
+            if ((boolean)$value) {
+                $this->session->put("keeper.$contextToUse.$key", $value);
+            } else {
+                $this->forget($key, $context);
+            }
         }
     }
 
@@ -44,6 +56,20 @@ class Keeper {
         $contextToUse = $this->getContext($context);
 
         return $this->session->get("keeper.$contextToUse.$key");
+    }
+
+    public function has($key, $context=null)
+    {
+        $contextToUse = $this->getContext($context);
+
+        return $this->session->has("keeper.$contextToUse.$key");
+    }
+
+    public function forget($key, $context=null)
+    {
+        $contextToUse = $this->getContext($context);
+
+        return $this->session->forget("keeper.$contextToUse.$key");
     }
 
     public function all($context=null)

@@ -24,8 +24,11 @@ class KeeperSeviceProvider extends ServiceProvider
     {
         $this->app->bind('keeper', function($app, $params)
         {
-            $context = $params[0] ?: null;
+            $context = isset($params[0]) ? $params[0] : $app->request->path();
+
             return new Keeper($context, app('Illuminate\Session\Store'));
         });
+
+        $this->app['router']->middleware('keep.filters', Middleware\KeepFilters::class);
     }
 }
